@@ -1,0 +1,44 @@
+#include<iostream>
+#include<math.h>
+using namespace std;
+bool Place(int k, int i, int* x)//判定两个皇后是否在同一列或在同一斜线上
+{
+	for (int j = 0; j < k; j++)
+		if ((x[j] == i) || (abs(x[j] - i) == abs(j - k))) return false;
+	return true;
+}
+void NQueens(int k, int n, int* x) //递归函数（求解n皇后问题）
+{
+	static bool flag = false;
+	for (int i = 0; i < n&&!flag; i++)
+	{
+		if (Place(k, i, x))
+		{
+			x[k] = i;
+			if (k == n - 1)
+			{
+				flag = true;
+				for (i = 0; i < n; i++) cout << x[i] << " ";
+
+			}
+			else
+			{
+				NQueens(k + 1, n, x);
+			}
+		}
+	}
+}
+void NQueens(int n, int* x)
+{
+	NQueens(0, n, x);
+}
+void main()
+{
+	int n;
+	cout << "输入问题规模n:" << endl;
+	cin >> n;
+	int *x=new int[n];
+	for (int i = 0; i < n; i++) x[i] = -1;
+	NQueens(n, x);
+	NQueensFlag(n, x);
+}

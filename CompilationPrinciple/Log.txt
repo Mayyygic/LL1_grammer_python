@@ -1,0 +1,94 @@
+Original grammar:
+E->TE'
+E'->ε|+E
+T->FT'
+T'->ε|T
+F->PF'
+F'->ε|*F'
+P->b|a|(E)|^
+VN={F,P,T,T',E,F',E'}
+VT={a,),+,ε,(,^,b,*}
+Grammar after eliminate_left_recursion:
+E->TE'
+E'->ε|+E
+T->FT'
+T'->ε|T
+F->PF'
+F'->ε|*F'
+P->b|a|(E)|^
+VN={F,P,T,T',E,F',E'}
+VT={a,),+,ε,(,^,b,*}
+Create FIRST:
+FIRST(a)={a}
+FIRST())={)}
+FIRST(+)={+}
+FIRST(ε)={ε}
+FIRST(()={(}
+FIRST(^)={^}
+FIRST(b)={b}
+FIRST(*)={*}
+FIRST(F)={^,a,b,(}
+FIRST(P)={^,a,b,(}
+FIRST(T)={^,a,b,(}
+FIRST(T')={a,ε,(,^,b}
+FIRST(E)={^,a,b,(}
+FIRST(F')={ε,*}
+FIRST(E')={ε,+}
+FIRST(TE')={^,a,b,(}
+FIRST(ε)={ε}
+FIRST(+E)={+}
+FIRST(FT')={^,a,b,(}
+FIRST(T)={^,a,b,(}
+FIRST(PF')={^,a,b,(}
+FIRST(*F')={*}
+FIRST(b)={b}
+FIRST(a)={a}
+FIRST((E))={(}
+FIRST(^)={^}
+Create FOLLOW:
+FOLLOW(F)={#,a,),+,(,^,b}
+FOLLOW(P)={#,a,),+,(,^,b,*}
+FOLLOW(T)={#,),+}
+FOLLOW(T')={#,),+}
+FOLLOW(E)={#,)}
+FOLLOW(F')={#,a,),+,(,^,b}
+FOLLOW(E')={#,)}
+Perform the analysis process:
+Analysis Table:
+              a         )         +         (         ^         b         *         #     
+    F       F->PF'                        F->PF'    F->PF'    F->PF'                      
+    P        P->a                         P->(E)     P->^      P->b                       
+    T       T->FT'                        T->FT'    T->FT'    T->FT'                      
+    T'      T'->T     T'->ε     T'->ε     T'->T     T'->T     T'->T               T'->ε   
+    E       E->TE'                        E->TE'    E->TE'    E->TE'                      
+    F'      F'->ε     F'->ε     F'->ε     F'->ε     F'->ε     F'->ε    F'->*F'    F'->ε   
+    E'                E'->ε     E'->+E                                            E'->ε   
+Process of Analysis:
+step      analysis_stack              input_string          production_used     
+1         #E                                a*b+b#          E->TE'              
+2         #E'T                              a*b+b#          T->FT'              
+3         #E'T'F                            a*b+b#          F->PF'              
+4         #E'T'F'P                          a*b+b#          P->a                
+5         #E'T'F'a                          a*b+b#                              
+6         #E'T'F'                            *b+b#          F'->*F'             
+7         #E'T'F'*                           *b+b#                              
+8         #E'T'F'                             b+b#          F'->ε               
+9         #E'T'                               b+b#          T'->T               
+10        #E'T                                b+b#          T->FT'              
+11        #E'T'F                              b+b#          F->PF'              
+12        #E'T'F'P                            b+b#          P->b                
+13        #E'T'F'b                            b+b#                              
+14        #E'T'F'                              +b#          F'->ε               
+15        #E'T'                                +b#          T'->ε               
+16        #E'                                  +b#          E'->+E              
+17        #E+                                  +b#                              
+18        #E                                    b#          E->TE'              
+19        #E'T                                  b#          T->FT'              
+20        #E'T'F                                b#          F->PF'              
+21        #E'T'F'P                              b#          P->b                
+22        #E'T'F'b                              b#                              
+23        #E'T'F'                                #          F'->ε               
+24        #E'T'                                  #          T'->ε               
+25        #E'                                    #          E'->ε               
+26        #                                      #          SUCCESS             
+Analysis Result: The input string "a*b+b" is a sentence of the grammar
